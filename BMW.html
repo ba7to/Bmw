@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BMW – ba7to</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ========== RESET ========== */
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Segoe UI,Arial,sans-serif;}
+
+/* ========== LETTERBOX ========== */
+#barTop,#barBottom{
+ position:fixed;left:0;width:100%;height:12vh;
+ background:#000;z-index:200;pointer-events:none;
+}
+#barTop{top:0}#barBottom{bottom:0}
+
+/* ========== SCENE ========== */
+#scene{position:relative;width:100%;height:100vh;perspective:1600px;overflow:hidden}
+
+/* ========== BACKGROUND ========== */
+#bg{
+ position:absolute;inset:0;
+ background:
+ radial-gradient(circle,#111 0%,#000 70%),
+ linear-gradient(to top,#000,#020617);
+ animation:bgPulse 6s ease-in-out infinite;
+}
+@keyframes bgPulse{50%{filter:brightness(1.2)}}
+
+/* ========== COLOR GRADING ========== */
+#grade{
+ position:absolute;inset:0;z-index:50;pointer-events:none;
+ background:linear-gradient(180deg,rgba(0,40,80,.25),rgba(0,0,0,.45));
+ mix-blend-mode:overlay;
+ animation:gradePulse 6s ease-in-out infinite;
+}
+@keyframes gradePulse{50%{opacity:.85}}
+
+/* ========== BMW M STRIPE SWEEP ========== */
+#sweep{
+ position:absolute;top:0;left:-120%;
+ width:120%;height:100%;z-index:40;
+ background:linear-gradient(90deg,transparent,#00f,#0044ff,#f00,transparent);
+ opacity:.15;animation:sweep 5s ease forwards;
+}
+@keyframes sweep{to{left:120%}}
+
+/* ========== FLASH CUT ========== */
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:300}
+.flash{animation:flash .2s}
+@keyframes flash{50%{opacity:1}}
+
+/* ========== CAR ========== */
+#car{
+ position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%) translateZ(-1400px) scale(.2);
+ width:min(90vw,900px);
+ filter:blur(10px) drop-shadow(0 60px 120px #000);
+ animation:carIn 4s cubic-bezier(.15,.85,.2,1) forwards;
+ z-index:10;
+}
+@keyframes carIn{
+ 70%{transform:translate(-50%,-50%) translateZ(-150px) scale(.9);filter:blur(2px)}
+ 100%{transform:translate(-50%,-50%) translateZ(0) scale(1);filter:blur(0)}
+}
+
+/* ========== CAMERA SHAKE ========== */
+.shake{animation:shake .15s infinite}
+@keyframes shake{
+ 25%{transform:translate(-48%,-52%)}
+ 50%{transform:translate(-52%,-48%)}
+}
+
+/* ========== DEPTH BLUR ========== */
+.depthBlur{animation:focusPull 4s ease forwards}
+@keyframes focusPull{to{filter:blur(0)}}
+
+/* ========== HEADLIGHT GLOW + FLARE ========== */
+#glow,#flare{
+ position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+ width:100%;height:40%;opacity:0;z-index:8;
+ animation:lights 4s ease forwards;
+}
+#glow{
+ background:
+ radial-gradient(circle at 30% 50%,rgba(0,150,255,.7),transparent 40%),
+ radial-gradient(circle at 70% 50%,rgba(0,150,255,.7),transparent 40%);
+ filter:blur(45px);
+}
+#flare{
+ background:
+ radial-gradient(circle at 30% 50%,rgba(0,200,255,.8),transparent 35%),
+ radial-gradient(circle at 70% 50%,rgba(0,200,255,.8),transparent 35%);
+ filter:blur(25px);
+}
+@keyframes lights{to{opacity:1}}
+
+/* ========== RAIN ========== */
+.rain{
+ position:absolute;width:2px;height:60px;
+ background:linear-gradient(to bottom,transparent,rgba(180,220,255,.6),transparent);
+ animation:rain linear infinite;
+}
+@keyframes rain{to{transform:translateY(120vh)}}
+
+/* ========== MOTION STREAKS ========== */
+.streak{
+ position:absolute;width:2px;height:120vh;
+ background:linear-gradient(to bottom,transparent,rgba(120,200,255,.5),transparent);
+ animation:streak linear infinite;
+}
+@keyframes streak{to{transform:translateY(140vh)}}
+
+/* ========== SMOKE + HEAT ========== */
+#smoke{
+ position:absolute;left:50%;top:60%;
+ transform:translateX(-50%);
+ width:400px;height:400px;border-radius:50%;
+ background:radial-gradient(circle,rgba(220,220,220,.5),transparent 60%);
+ filter:blur(60px);opacity:0;
+ animation:smoke 2.5s ease forwards;
+ z-index:6;
+}
+@keyframes smoke{50%{opacity:.6}100%{transform:translateX(-50%) scale(2);opacity:0}}
+
+#heat{
+ position:absolute;bottom:22%;left:50%;
+ transform:translateX(-50%);
+ width:320px;height:220px;
+ background:radial-gradient(circle,rgba(255,255,255,.2),transparent 70%);
+ filter:blur(3px);
+ animation:heat .4s infinite alternate;
+ opacity:.35;z-index:7;
+}
+@keyframes heat{to{transform:translateX(-50%) scale(1.05)}}
+
+/* ========== TITLE ========== */
+#title{
+ position:absolute;top:18%;left:50%;transform:translateX(-50%);
+ font-size:clamp(48px,12vw,140px);
+ font-weight:900;letter-spacing:8px;
+ background:linear-gradient(90deg,#00f,#fff,#f00);
+ background-size:400%;
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ animation:shine 3s linear infinite;
+ opacity:0;z-index:100;
+}
+@keyframes shine{to{background-position:400%}}
+
+/* ========== BMW LOGO ========== */
+#logo{
+ position:absolute;bottom:18%;left:50%;
+ transform:translateX(-50%) scale(.6);
+ width:120px;opacity:0;
+ animation:logo 2s ease forwards 4s;
+ z-index:100;
+}
+@keyframes logo{to{opacity:1;transform:translateX(-50%) scale(1)}}
+
+/* ========== FILM GRAIN ========== */
+#grain{
+ position:fixed;inset:0;z-index:400;pointer-events:none;
+ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='0.15'/></svg>");
+ animation:grain .2s steps(2) infinite;
+}
+@keyframes grain{to{transform:translate(10px,10px)}}
+
+/* ========== BASS VIBRATION ========== */
+.bass{animation:bass .15s infinite}
+@keyframes bass{50%{transform:scale(1.01)}}
+</style>
+</head>
+
+<body>
+<div id="barTop"></div><div id="barBottom"></div>
+
+<div id="scene">
+<div id="bg"></div>
+<div id="sweep"></div>
+<div id="grade"></div>
+<div id="flash"></div>
+
+<div id="smoke"></div>
+<div id="heat"></div>
+<div id="glow"></div>
+<div id="flare"></div>
+
+<img id="car" src="338380.jpg">
+
+<div id="title">ba7to</div>
+
+<svg id="logo" viewBox="0 0 200 200">
+<circle cx="100" cy="100" r="98" fill="#000" stroke="#fff" stroke-width="4"/>
+<path d="M100 100 L100 2 A98 98 0 0 1 198 100 Z" fill="#0066ff"/>
+<path d="M100 100 L198 100 A98 98 0 0 1 100 198 Z" fill="#fff"/>
+<path d="M100 100 L100 198 A98 98 0 0 1 2 100 Z" fill="#0066ff"/>
+<path d="M100 100 L2 100 A98 98 0 0 1 100 2 Z" fill="#fff"/>
+</svg>
+
+<audio id="turbo" src="./turbo-flutter-336362.mp3"></audio>
+<audio id="idle" src="https://cdn.pixabay.com/download/audio/2022/03/09/audio_6d7a0f89cc.mp3" loop></audio>
+</div>
+
+<div id="grain"></div>
+
+<script>
+const scene=document.getElementById('scene');
+const car=document.getElementById('car');
+const turbo=document.getElementById('turbo');
+const idle=document.getElementById('idle');
+const flash=document.getElementById('flash');
+const title=document.getElementById('title');
+
+/* RAIN */
+for(let i=0;i<140;i++){
+ const r=document.createElement('div');
+ r.className='rain';
+ r.style.left=Math.random()*100+'%';
+ r.style.animationDuration=(.4+Math.random())+'s';
+ scene.appendChild(r);
+}
+
+/* STREAKS */
+for(let i=0;i<25;i++){
+ const s=document.createElement('div');
+ s.className='streak';
+ s.style.left=Math.random()*100+'%';
+ s.style.animationDuration=(.3+Math.random())+'s';
+ scene.appendChild(s);
+}
+
+/* TIMELINE (CLICK REQUIRED FOR SOUND) */
+document.body.addEventListener('click',()=>{
+ turbo.volume=0.9;turbo.play();
+ scene.classList.add('bass');
+ car.classList.add('shake','depthBlur');
+
+ setTimeout(()=>flash.classList.add('flash'),3600);
+
+ setTimeout(()=>{
+  idle.volume=0.4;idle.play();
+  scene.classList.remove('bass');
+  car.classList.remove('shake');
+  title.style.opacity=1;
+ },3800);
+},{once:true});
+</script>
+</body>
+</html>
